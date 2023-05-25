@@ -1,15 +1,23 @@
 import os
+import sys
 from dotenv import load_dotenv
-from pymongo.mongo_client import MongoClient
+import pymongo
 
 load_dotenv()
 
-uri = os.getenv('DATABASE_URI')
-# Create a new client and connect to the server
-client = MongoClient(uri)
-# Send a ping to confirm a successful connection
 try:
-    client.admin.command('ping')
-    print("Pinged your deployment. You successfully connected to MongoDB!")
-except Exception as e:
-    print(e)
+    client = pymongo.MongoClient(os.getenv("DATABASE_URI"))
+    print("success")
+
+except pymongo.errors.ConfigurationError:
+    print(
+        "An Invalid URI host error was received. Is your Atlas host name correct in your connection string?"
+    )
+    sys.exit(1)
+
+
+async def get_database():
+    db = client.myDatabase
+    return db
+
+# my_collection = db[collection_name]
